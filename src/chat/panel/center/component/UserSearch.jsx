@@ -48,21 +48,18 @@ class UserSearch extends React.Component {
         }
 
         let data = {
-            name: value
+            username: value
         }
         axiosGet(Params.USER_NAME_URL, data)
             .then(response => {
                 let data = response.data
-                if (data.user.username === "" && data.group.name === "") {
-                    message.error("未查找到群或者用户")
+                if (data.count=== 0) {
+                    message.error("未查找用户")
                     return
                 }
                 let queryUser = {
-                    username: data.user.username,
-                    nickname: data.user.nickname,
-
-                    groupUuid: data.group.uuid,
-                    groupName: data.group.name,
+                    username: data.list[0].username,
+                    nickname: data.list[0].nickName,
                 }
                 this.setState({
                     hasUser: true,
@@ -79,7 +76,7 @@ class UserSearch extends React.Component {
 
     addUser = () => {
         let data = {
-            uuid: localStorage.uuid,
+            userId: localStorage.userId,
             friendUsername: this.state.queryUser.username
         }
         axiosPostBody(Params.USER_FRIEND_URL, data)

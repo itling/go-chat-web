@@ -32,14 +32,16 @@ class UserList extends React.Component {
      * @param {选择的用户} value 
      */
     chooseUser = (value) => {
+        console.log('chooseUser',value)
         let chooseUser = {
-            toUser: value.uuid,
+            toUser: value.userId,
             toUsername: value.username,
             messageType: value.messageType,
             avatar: value.avatar
         }
-        this.fetchMessages(chooseUser);
-        this.removeUnreadMessageDot(value.uuid);
+        this.props.setChooseUser(chooseUser);
+        //this.fetchMessages(chooseUser);
+        //this.removeUnreadMessageDot(value.userId);
     }
 
     /**
@@ -47,12 +49,12 @@ class UserList extends React.Component {
      */
     fetchMessages = (chooseUser) => {
         const { messageType, toUser, toUsername } = chooseUser
-        let uuid = localStorage.uuid
+        let userId = localStorage.userId
         if (messageType === 2) {
-            uuid = toUser
+            userId = toUser
         }
         let data = {
-            Uuid: uuid,
+            userId: userId,
             FriendUsername: toUsername,
             MessageType: messageType
         }
@@ -104,12 +106,12 @@ class UserList extends React.Component {
 
     /**
      * 查看消息后，去掉未读提醒
-     * @param {发送给对应人员的uuid} toUuid 
+     * @param {发送给对应人员的uuid} toUserId 
      */
-    removeUnreadMessageDot = (toUuid) => {
+    removeUnreadMessageDot = (toUserId) => {
         let userList = this.props.userList;
         for (var index in userList) {
-            if (userList[index].uuid === toUuid) {
+            if (userList[index].userId === toUserId) {
                 userList[index].hasUnreadMessage = false;
                 this.props.setUserList(userList);
                 break;

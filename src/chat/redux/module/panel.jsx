@@ -1,7 +1,7 @@
 const initialState = {
     userList: [],
     chooseUser: {
-        toUser: '',     // 接收方uuid
+        toUser: '',     // 接收方userId
         toUsername: '', // 接收方用户名
         messageType: 1, // 消息类型，1.单聊 2.群聊
         avatar: '',     // 接收方的头像

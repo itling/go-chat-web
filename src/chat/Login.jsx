@@ -25,13 +25,20 @@ class Login extends React.Component {
     onFinish = (values) => {
         let data = {
             username: values.username,
-            password: values.password
+            password: values.password,
+            code: '0',
+            uuid: '0'
         }
         axiosPostBody(Params.LOGIN_URL, data)
             .then(response => {
+                console.log('response',response)
                 message.success("登录成功！");
-                localStorage.username = response.data.username
-                this.props.history.push("panel/" + response.data.uuid)
+                let strings = response.token.split("."); //截取token，获取载体
+                let userinfo = JSON.parse(decodeURIComponent(escape(window.atob(strings[1].replace(/-/g, "+").replace(/_/g, "/"))))); //解析，需要吧‘_’,'-'进行转换否则会无法解析
+
+                localStorage.username = userinfo.identity.Username
+                localStorage.setItem('jwt',response.token)
+                this.props.history.push("panel/" + userinfo.identity.UserId)
             });
     };
 

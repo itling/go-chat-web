@@ -30,19 +30,19 @@ class SwitchChat extends React.Component {
             menuType: 1,
         })
         let data = {
-            uuid: localStorage.uuid
+            userId: localStorage.userId
         }
         axiosGet(Params.USER_LIST_URL, data)
             .then(response => {
-                let users = response.data
+                let users = response.data.list
                 let data = []
                 for (var index in users) {
                     let d = {
                         hasUnreadMessage: false,
-                        username: users[index].username,
-                        uuid: users[index].uuid,
+                        username: users[index].friendUserId,
+                        userId: users[index].friendUserId,
                         messageType: 1,
-                        avatar: Params.HOST + "/file/" + users[index].avatar,
+                        avatar: "/avatar.png",
                     }
                     data.push(d)
                 }
@@ -59,16 +59,16 @@ class SwitchChat extends React.Component {
             menuType: 2,
         })
         let data = {
-            uuid: localStorage.uuid
+            userId: localStorage.userId
         }
-        axiosGet(Params.GROUP_LIST_URL + "/" + localStorage.uuid, data)
+        axiosGet(Params.GROUP_LIST_URL + "/" + localStorage.userId, data)
             .then(response => {
                 let users = response.data
                 let data = []
                 for (var index in users) {
                     let d = {
                         username: users[index].name,
-                        uuid: users[index].uuid,
+                        userId: users[index].userId,
                         messageType: 2,
                     }
                     data.push(d)

@@ -1,15 +1,15 @@
 export const API_VERSION = "/api/v1/";
 
 const PROTOCOL = "http://"
-export const IP_PORT = "localhost:8888";
+export const IP_PORT = "192.168.31.6:9877";
 //local
 export const HOST = PROTOCOL + IP_PORT;
 
-export const LOGIN_URL = HOST + '/user/login'
+export const LOGIN_URL = HOST + API_VERSION + 'login'
 export const REGISTER_URL = HOST + '/user/register'
-export const USER_URL = HOST + '/user/'
-export const USER_NAME_URL = HOST + '/user/name'
-export const USER_LIST_URL = HOST + '/user'
+export const USER_URL = HOST + API_VERSION+ 'sys-user/'
+export const USER_NAME_URL = HOST + API_VERSION + 'sys-user'
+export const USER_LIST_URL = HOST + API_VERSION + 'im/friend-list'
 
 export const USER_FRIEND_URL = HOST + '/friend'
 

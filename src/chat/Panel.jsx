@@ -66,7 +66,7 @@ var heartCheck = {
 class Panel extends React.Component {
     constructor(props) {
         super(props)
-        localStorage.uuid = props.match.params.user;
+        localStorage.userId = props.match.params.user;
         this.state = {
             onlineType: 1, // 在线视频或者音频： 1视频，2音频
             video: {
@@ -83,7 +83,7 @@ class Panel extends React.Component {
             },
             videoCallModal: false,
             callName: '',
-            fromUserUuid: '',
+            fromUserId: '',
         }
     }
 
@@ -98,16 +98,17 @@ class Panel extends React.Component {
         console.log("to connect...")
         peer = new RTCPeerConnection();
         var image = document.getElementById('receiver');
-        socket = new WebSocket("ws://" + Params.IP_PORT + "/socket.io?user=" + this.props.match.params.user)
+        socket = new WebSocket("ws://" + Params.IP_PORT + "/ws?token="+window.localStorage.getItem('jwt'))
 
         socket.onopen = () => {
             heartCheck.start()
-            console.log("connected")
+            console.log("connected successfully")
             this.webrtcConnection()
 
             this.props.setSocket(socket);
         }
         socket.onmessage = (message) => {
+            
             heartCheck.start()
 
             // 接收到的message.data,是一个blob对象。需要将该对象转换为ArrayBuffer，才能进行proto解析
@@ -116,7 +117,9 @@ class Panel extends React.Component {
             reader.readAsArrayBuffer(message.data);
             reader.onload = ((event) => {
                 let messagePB = messageProto.decode(new Uint8Array(event.target.result))
-                console.log(messagePB)
+                if(messagePB.type!=='heatbeat'){
+                    console.log('server msg',messagePB)
+                }
                 if (messagePB.type === "heatbeat") {
                     return;
                 }
@@ -128,7 +131,8 @@ class Panel extends React.Component {
                 }
 
                 // 如果该消息不是正在聊天消息，显示未读提醒
-                if (this.props.chooseUser.toUser !== messagePB.from) {
+                console.log('this.props.chooseUser.toUser',this.props.chooseUser.toUser)
+                if (this.props.chooseUser.toUser.toString() !== messagePB.from) {
                     this.showUnreadMessageDot(messagePB.from);
                     return;
                 }
@@ -186,13 +190,13 @@ class Panel extends React.Component {
         }
 
         socket.onclose = (_message) => {
-            console.log("close and reconnect-->--->")
+            console.log("close and reconnect-->--->",_message)
 
             this.reconnect()
         }
 
         socket.onerror = (_message) => {
-            console.log("error----->>>>")
+            console.log("error----->>>>",_message)
 
             this.reconnect()
         }
@@ -353,9 +357,10 @@ class Panel extends React.Component {
             ...messageData,
             messageType: this.props.chooseUser.messageType, // 消息类型，1.单聊 2.群聊
             fromUsername: localStorage.username,
-            from: localStorage.uuid,
-            to: toUser,
+            from: localStorage.userId,
+            to: toUser.toString(),
         }
+        console.log('sendMessage data',data)
         let message = protobuf.lookup("protocol.Message")
         const messagePB = message.create(data)
 
@@ -429,12 +434,12 @@ class Panel extends React.Component {
 
     /**
      * 如果接收到的消息不是正在聊天的消息，显示未读提醒
-     * @param {发送给对应人员的uuid} toUuid 
+     * @param {发送给对应人员的toUserId} toUserId 
      */
-    showUnreadMessageDot = (toUuid) => {
+    showUnreadMessageDot = (toUserId) => {
         let userList = this.props.userList;
         for (var index in userList) {
-            if (userList[index].uuid === toUuid) {
+            if (userList[index].userId === toUserId) {
                 userList[index].hasUnreadMessage = true;
                 this.props.setUserList(userList);
                 break;
@@ -452,7 +457,7 @@ class Panel extends React.Component {
         let data = {
             contentType: Constant.ACCEPT_VIDEO_ONLINE,
             type: Constant.MESSAGE_TRANS_TYPE,
-            toUser: this.state.fromUserUuid,
+            toUser: this.state.fromUserId,
         }
         this.sendMessage(data);
 
@@ -479,7 +484,7 @@ class Panel extends React.Component {
             this.setState({
                 videoCallModal: true,
                 callName: message.fromUsername,
-                fromUserUuid: message.from,
+                fromUserId: message.from,
             })
             return;
         }

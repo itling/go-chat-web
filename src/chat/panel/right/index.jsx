@@ -72,8 +72,8 @@ class RightIndex extends React.Component {
 
         return (
             <div style={{
-                height: document.body.scrollHeight - 80,
-                overflow: 'hidden',
+                height: document.body.scrollHeight - 180,
+                overflow: 'auto',
             }}
             >
                 <ChatDetails history={this.props.history} appendMessage={this.appendMessage} />

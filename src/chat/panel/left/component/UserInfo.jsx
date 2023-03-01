@@ -56,11 +56,12 @@ class UserInfo extends React.Component {
      * 获取用户详情
      */
     fetchUserDetails = () => {
-        axiosGet(Params.USER_URL + localStorage.uuid)
+        axiosGet(Params.USER_URL + localStorage.userId)
             .then(response => {
+                console.log('Params.USER_URL',response)
                 let user = {
                     ...response.data,
-                    avatar: Params.HOST + "/file/" + response.data.avatar
+                    avatar: "/avatar.png"
                 }
                 this.props.setUser(user)
             });
@@ -146,7 +147,7 @@ class UserInfo extends React.Component {
                         action={Params.FILE_URL}
                         beforeUpload={beforeUpload}
                         onChange={this.handleChange}
-                        data={{ uuid: this.props.user.uuid }}
+                        data={{ userId: this.props.user.userId }}
                     >
                         {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                     </Upload>
