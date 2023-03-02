@@ -36,12 +36,13 @@ class UserList extends React.Component {
         let chooseUser = {
             toUser: value.userId,
             toUsername: value.username,
+            toNickName: value.nickName,
             messageType: value.messageType,
             avatar: value.avatar
         }
-        this.props.setChooseUser(chooseUser);
-        //this.fetchMessages(chooseUser);
-        //this.removeUnreadMessageDot(value.userId);
+        //this.props.setChooseUser(chooseUser);
+        this.fetchMessages(chooseUser);
+        this.removeUnreadMessageDot(value.userId);
     }
 
     /**
@@ -49,15 +50,16 @@ class UserList extends React.Component {
      */
     fetchMessages = (chooseUser) => {
         const { messageType, toUser, toUsername } = chooseUser
-        let userId = localStorage.userId
-        if (messageType === 2) {
-            userId = toUser
-        }
+        //let userId = localStorage.userId
+        // if (messageType === 2) {
+        //     userId = toUser
+        // }
         let data = {
-            userId: userId,
-            FriendUsername: toUsername,
-            MessageType: messageType
+            id: toUser,
+            //FriendUsername: toUsername,
+            messageType: messageType
         }
+        console.log('Params.MESSAGE_URL',Params.MESSAGE_URL)
         axiosGet(Params.MESSAGE_URL, data)
             .then(response => {
                 let comments = []
@@ -71,7 +73,7 @@ class UserList extends React.Component {
 
                     let comment = {
                         author: data[i].fromUsername,
-                        avatar: Params.HOST + "/file/" + data[i].avatar,
+                        avatar: "/avatar.png",
                         content: <p>{content}</p>,
                         datetime: moment(data[i].createAt).fromNow(),
                     }
@@ -140,7 +142,7 @@ class UserList extends React.Component {
                                         style={{ paddingLeft: 30 }}
                                         onClick={() => this.chooseUser(item)}
                                         avatar={<Badge dot={item.hasUnreadMessage}><Avatar src={item.avatar} /></Badge>}
-                                        title={item.username}
+                                        title={item.nickName+'('+item.username+')'}
                                         description=""
                                     />
                                 </List.Item>

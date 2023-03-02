@@ -1,7 +1,7 @@
 export const API_VERSION = "/api/v1/";
 
 const PROTOCOL = "http://"
-export const IP_PORT = "192.168.31.6:9877";
+export const IP_PORT = "10.10.1.147:9877";
 //local
 export const HOST = PROTOCOL + IP_PORT;
 
@@ -13,7 +13,7 @@ export const USER_LIST_URL = HOST + API_VERSION + 'im/friend-list'
 
 export const USER_FRIEND_URL = HOST + '/friend'
 
-export const MESSAGE_URL = HOST + '/message'
+export const MESSAGE_URL = HOST + API_VERSION + 'im/message'
 
 export const GROUP_LIST_URL = HOST + '/group'
 export const GROUP_USER_URL = HOST + '/group/user/'

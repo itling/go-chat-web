@@ -72,7 +72,7 @@ class RightIndex extends React.Component {
 
         return (
             <div style={{
-                height: document.body.scrollHeight - 180,
+                height: document.body.scrollHeight - 80,
                 overflow: 'auto',
             }}
             >

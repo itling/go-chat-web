@@ -39,7 +39,8 @@ class SwitchChat extends React.Component {
                 for (var index in users) {
                     let d = {
                         hasUnreadMessage: false,
-                        username: users[index].friendUserId,
+                        username: users[index].friendUser.username,
+                        nickName: users[index].friendUser.nickName,
                         userId: users[index].friendUserId,
                         messageType: 1,
                         avatar: "/avatar.png",
